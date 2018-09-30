@@ -1,10 +1,17 @@
 <style>
 body {
-    max-width: 750px;
+    max-width: 650px;
     font-family: sans-serif;
 }
+
 img {
     max-width: 100%;
+}
+
+.toroImages img {
+    height:200px;
+    width:49%;
+    
 }
 </style>
 <title>Rory Cripin</title>
@@ -28,7 +35,8 @@ Presently working in the Cloud R&D team @ [Starleaf](https://starleaf.com).
 I spend my time thinking about the design of elegant systems and have strong
 opinions about privacy in the digital age.
 
-I\'ve worked with [StarLeaf](https://www.starleaf.com/), [Atos](https://atos.net/en/), [Deliveroo](https://deliveroo.co.uk/), as a Python & Arduino tutor and on a
+I\'ve worked with [StarLeaf](https://www.starleaf.com/), [Atos](https://atos.net/en/), 
+[Deliveroo](https://deliveroo.co.uk/), as a Python & Arduino tutor and on a
 number of cool personal projects;
 
 
@@ -41,7 +49,7 @@ censorship while avoiding funding corrupt casinos, and the resultant challenges
 involving the cryptographic protocol, the lack of trust in such a decentralised
 system and in the implementation of poker. The final product is a toolkit for
 peer to peer card games, with an implementation of Texas Hold \'em poker to
-demonstrate it’s functionality.
+demonstrate it\’s functionality.
 [PDF link](./psyrc3-g53ids-no-appendix.pdf)
 
 
@@ -49,7 +57,7 @@ demonstrate it’s functionality.
 
 <a
 href="https://www.youtube.com/watch?v=fLfHxIgfHbs&list=PLiMFSoShr-2CHHhh7sUthnF5c6HZwKOro">
-<img src="./mirror_yt.jpg" width="600em"> </a> 
+<img src="./mirror_yt.jpg"> </a>
 
 
 # toroCam
@@ -66,9 +74,9 @@ take precisely timed photos such as the following:
 ![](./dropPhoto.jpg) 
 
 The custom made toroCam boards look like this:
-
+<div class="toroImages">
 ![](./tcBoard1.jpg) ![](./tcBoard2.jpg)
-
+</div>
 <https://github.com/RoryCrispin/toroCamAndroid>
 
 
@@ -79,7 +87,8 @@ quick quickstart package of software for new installs using the Chocolatey
 package manager. ![](./quickstart.png)
 
 Unlike the competition, choco quickstart makes use of a package manager; so
-updates to software are easy to manage. (Instead of just bundling all the installers into one runnable.)
+updates to software are easy to manage. (Instead of just bundling all the 
+installers into one runnable)
 
 <https://github.com/RoryCrispin/Chocolatey-Quickstart>
 
