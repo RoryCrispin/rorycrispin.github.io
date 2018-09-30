@@ -1,6 +1,6 @@
 <style>
 body {
-    max-width: 600px;
+    max-width: 750px;
     font-family: sans-serif;
 }
 img {
