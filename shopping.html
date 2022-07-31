@@ -1,0 +1,44 @@
+<head>
+    <title>Speed shopping in plaintext with fuzzy matching</title>
+</head>
+<style >
+ body {
+    max-width: 650px;
+    font-family: sans-serif;
+ }
+ .code {
+    font-family: 'Courier New', Courier, monospace;
+ }
+
+ }
+</style>
+
+
+<body>
+    <h1>Speed shopping in plaintext with fuzzy matching</h1>
+
+I spend a disproportionate amount of time digging through piles of data. Sometimes search feels great, like tearing through tens of gigabytes with ripgrep to structural search across the world's open source catalog with <a href="https://sourcegraph.com/search">Sourcegraph</a> in seconds, and then there is grocery shopping websites, which, for anything more complex than single word items 'apples', 'oranges' or 'carrots' can feel more akin to trying to ask for peanut butter in a foreign supermarket using only mime.
+<br><br>
+
+GroceryShopper is a tool that I wrote to automate the frustration of doing my weekly groceries. I find that through fuzzy matching across the supermarket catalogue and basic plaintext processing, I can take almost all of the pain out of the process.
+    <script id="asciicast-CfShXupdcNPbv3xN755f322n5" src="https://asciinema.org/a/CfShXupdcNPbv3xN755f322n5.js" async data-autoplay="true" data-startAt="6" data-loop=1></script></div>
+<br>
+In the above sample, you can see how quick it is to add known items to the order, just a few keystrokes nets me my usual order. Better yet, the search utility just outputs a plaintext file of my order which can be sliced, diced, and combined with other small lists like so;
+
+<br>
+<span class="code">
+cat fajitas 3beanchilli brownies > list.txt
+</span>
+
+<br>
+This final list containing the ingredients for three recipes can be simply passed to the purchasing tool as if it were created directly by the search utility.
+
+<br>
+<script id="asciicast-joJKWsnPKIxfXNgRF8TA7fnhc" src="https://asciinema.org/a/joJKWsnPKIxfXNgRF8TA7fnhc.js" async data-autoplay="true"></script>
+
+To build this, I just wrote a little <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/"> Beautiful Soup</a> script to scrape the Tescos website for all of their products into a text file, and write a little python to search through this, using the excellent <a href="https://pypi.org/project/fuzzywuzzy/">FuzzyWuzzy</a> project (Which calculates the <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> under the hood) to make fuzzy matching a breeze. 
+<br><br>
+
+In order to actually place the orders, I was pleased to discover that Tesco Labs have an IFTTT integration which that me a simple api to add products by their ID to my current order.
+
+</body>
