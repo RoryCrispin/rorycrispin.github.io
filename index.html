@@ -1,19 +1,5 @@
-<html><head><style>
-body {
-    max-width: 650px;
-    font-family: sans-serif;
-}
-
-img {
-    max-width: 100%;
-}
-
-.toroImages img {
-    height:200px;
-    width:49%;
-    
-}
-</style>
+<html><head>
+<link rel="stylesheet" type="text/css" href="style.css">
 <title>
 Rory Cripin
 </title>
@@ -27,6 +13,9 @@ Rory Cripin
 <h1>Recent writing</h1>
 <ul>
     <li>
+      Building LogHouse - London ClickHouse Meetup, May 2025
+    </li>
+    <li>
         <a href="https://clickhouse.com/blog/building-a-logging-platform-with-clickhouse-and-saving-millions-over-datadog">How we Built a 19 PiB Logging Platform with ClickHouse and Saved Millions</a> - Apr 2024
     </li>
     <li>
@@ -39,8 +28,75 @@ Rory Cripin
         <a href="shopping.html">Speed shopping in plaintext with fuzzy matching</a> - Aug 2022
     </li>
 </ul>
+
+<h1 id="kubefs">kubefs - 2022</h1>
+<p>
+  Use the plaintext tools which you already know inside out to interact with your clusters.
+  <br>
+
+kubefs makes your clusters available as a tree of plaintext files.
+
+  <pre>
+kubectl --context majestic-gnat --namespace flycatcher get po nginx-1 -oyaml
+becomes
+cat /tmp/kubefs/majestic-gnat/namespaces/flycatcher/pods/nginx-1/def.yaml
+</pre>
+
+You can exec commands on containers too;
+
+ <pre>
+kubectl --context majestic-gnat --namespace flycatcher exec nginx-1 --container nginx-ingress -- cat blah
+becomes
+echo "cat blah" >> /tmp/kubefs/majestic-gnat/namespaces/flycatcher/pods/nginx-1/containers/nginx-ingress
+</pre>
+But it's true power comes when you use your existing tools:
+
+ <br>
+Diff two pod definitions with emacs:
+ <pre>
+ediff /tmp/kubefs/majestic-gnat/namespaces/flycatcher/pods/nginx-1/def.yaml /tmp/kubefs/majestic-gnat/namespaces/flycatcher/pods/nginx-2/def.yaml
+</pre>
+  </p>
+
+
+
 <h1 id="peer-to-peer-poker-dissertation">Peer to Peer Poker Dissertation - 2018</h1>
-<p>Abstract: In this project, we explore the concept of playing Texas Hold 'em Poker without a trusted authority by using a decentralised Peer to Peer network model. We consider the applications of such a protocol in fighting internet censorship while avoiding funding corrupt casinos, and the resultant challenges involving the cryptographic protocol, the lack of trust in such a decentralised system and in the implementation of poker. The final product is a toolkit for peer to peer card games, with an implementation of Texas Hold 'em poker to demonstrate it's functionality. 
+<i>Or, how to gamble in secret casinos</i>
+<p>Abstract: In this project, we explore the concept of playing Texas Hold 'em Poker without a trusted authority by using a decentralised Peer to Peer network model. We consider the applications of such a protocol in fighting internet censorship while avoiding funding corrupt casinos, and the resultant challenges involving the cryptographic protocol, the lack of trust in such a decentralised system and in the implementation of poker. The final product is a toolkit for peer to peer card games, with an implementation of Texas Hold 'em poker to demonstrate it's functionality.
+
+
+<h1 id="connect4">Connect4RESTful - 2017</h1>
+<p>Connect4RESTful was a project to implement Connect4 with Minmax AI <a href="https://raw.githubusercontent.com/RoryCrispin/Connect4RESTful/refs/heads/master/app/C4Restful.lhs">written in literate Haskell.</a> It's compiled to wasm and playable in the browser.</p>
+<pre class="c4-code">
+  <code>
+
+  /$$$$$$   /$$$$$$  /$$   /$$ /$$   /$$ /$$$$$$$$  /$$$$$$  /$$$$$$$$       /$$   /$$
+ /$$__  $$ /$$__  $$| $$$ | $$| $$$ | $$| $$_____/ /$$__  $$|__  $$__/      | $$  | $$
+| $$  \__/| $$  \ $$| $$$$| $$| $$$$| $$| $$      | $$  \__/   | $$         | $$  | $$
+| $$      | $$  | $$| $$ $$ $$| $$ $$ $$| $$$$$   | $$         | $$         | $$$$$$$$
+| $$      | $$  | $$| $$  $$$$| $$  $$$$| $$__/   | $$         | $$         |_____  $$
+| $$    $$| $$  | $$| $$\  $$$| $$\  $$$| $$      | $$    $$   | $$               | $$
+|  $$$$$$/|  $$$$$$/| $$ \  $$| $$ \  $$| $$$$$$$$|  $$$$$$/   | $$               | $$
+ \______/  \______/ |__/  \__/|__/  \__/|________/ \______/    |__/               |__/
+
+
+---
+*Declarations*
+---
+The length of a winning combo is declared as a constant here
+
+> c_win 	= 4
+
+Boards are represented as O,X,B where O/X are players and B is 'Blank'
+
+> data PlayerValue = O | B | X deriving (Ord, Eq,Show, Generic)
+> instance ToJSON   PlayerValue
+> instance FromJSON PlayerValue
+  ...
+  </code>
+</pre>
+<p><a href="https://rorycrispin.co.uk/Connect4RESTful/static-files/index-wasm.html"><img class="c4Img" src="./c4.png"></a></p>
+
 <h1 id="torocam">toroCam - 2013</h1>
 <p>ToroCam is a camera control system, which gives you unparallelled control over your SLR though an open source app and a small, Arduino compatible board. Unlike competing solutions, your phone is never tethered to the camera when using toroCam as a high performance dedicated board connects to the camera directly and the phone is only responsible for sending instructions on which triggers the board should use - allowing the system to react in microseconds to sensor values, far quicker than any dedicated mobile based solution which allows us to take precisely timed photos such as the following:</p>
 <p><img src="./dropPhoto.jpg"></p>
@@ -49,10 +105,9 @@ The custom made toroCam boards look like this:
 <p><img src="./tcBoard1.jpg"> <img src="./tcBoard2.jpg"></p>
 </div>
 <p><a href="https://github.com/RoryCrispin/toroCamAndroid" class="uri">https://github.com/RoryCrispin/toroCamAndroid</a></p>
-<h1 id="choco-quickstart">Choco Quickstart - 2016 </h1>
-<p>Choco Quickstart is a nifty little tool that I wrote to give windows users a quick quickstart package of software for new installs using the Chocolatey package manager. <img src="./quickstart.png"></p>
-<p>Unlike the competition, choco quickstart makes use of a package manager; so updates to software are easy to manage. (Instead of just bundling all the installers into one runnable)</p>
-<p><a href="https://github.com/RoryCrispin/Chocolatey-Quickstart" class="uri">https://github.com/RoryCrispin/Chocolatey-Quickstart</a></p>
+
+
+
 
 
 <p></p>
