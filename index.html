@@ -1031,7 +1031,7 @@
 </div>
 
 <script>
-  // 3D book: turns to face the cursor (or follows phone tilt) and opens up
+  // 3D book: turns to face the cursor and opens up
   (function () {
     const book = document.getElementById('book3d');
     if (!book) return;
@@ -1059,26 +1059,14 @@
       return;
     }
 
-    // touch: first tap opens the book, second tap follows the link; tilt with the phone
+    // touch: first tap opens the book, second tap follows the link
     wrap.addEventListener('click', (e) => {
       if (wrap.classList.contains('is-open')) return;
       e.preventDefault();
       wrap.classList.add('is-open');
-      // iOS only sends tilt after the user grants motion access from a tap
-      const DOE = window.DeviceOrientationEvent;
-      if (!gotTilt && DOE && typeof DOE.requestPermission === 'function') DOE.requestPermission().catch(() => {});
     });
     // close again once it's scrolled away, so the next visit starts closed
     new IntersectionObserver(([e]) => { if (!e.isIntersecting) wrap.classList.remove('is-open'); }).observe(book);
-
-    let raf = 0, g = 0, b = 0, base = null, gotTilt = false;
-    const onTilt = (e) => {
-      if (e.gamma == null) return;
-      if (base === null) base = e.beta;           // treat the starting angle as neutral
-      g = e.gamma; b = e.beta;
-      if (!raf) raf = requestAnimationFrame(() => { raf = 0; setTilt(clamp(g / 25), clamp((base - b) / 25)); });
-    };
-    addEventListener('deviceorientation', (e) => { if (e.gamma != null) gotTilt = true; onTilt(e); });
   })();
 
   // email reveal — never in the DOM as plaintext, assembled on first interaction
