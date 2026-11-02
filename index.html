@@ -617,18 +617,24 @@
     font-family: var(--serif); font-size: 4.6px; line-height: 1.55; color: #3a362f;
     text-align: justify; overflow: hidden;
   }
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .book3d-wrap { position: relative; z-index: 2; }
-    .book3d-wrap:hover::before { content: ""; position: absolute; top: -10px; bottom: -10px; left: calc(-1 * var(--w) - 16px); right: -10px; }
-    .book3d-wrap:hover .book3d { transform: rotateX(calc(var(--rx) / 2)) rotateY(calc(var(--ry) / 3)); }
-    .book3d-wrap:hover .book3d-cover {
+  @media (prefers-reduced-motion: no-preference) {
+    .book3d-wrap { position: relative; z-index: 2; transition: transform .6s cubic-bezier(.3,.6,.2,1) .5s; }
+    .book3d-wrap.is-open .book3d { transform: rotateX(calc(var(--rx) / 2)) rotateY(calc(var(--ry) / 3)); }
+    .book3d-wrap.is-open .book3d-cover {
       transform: translateZ(calc(var(--d) / 2)) rotateY(-168deg);
       transition-delay: 0s;
     }
-    .book3d-wrap:hover .book3d-leaf {
+    .book3d-wrap.is-open .book3d-leaf {
       transform: translateZ(calc(var(--d) / 2 - 1px)) rotateY(calc(-164deg + var(--i) * 4deg));
       transition-delay: calc(.35s + var(--i) * .14s);
     }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .book3d-wrap.is-open::before { content: ""; position: absolute; top: -10px; bottom: -10px; left: calc(-1 * var(--w) - 16px); right: -10px; }
+  }
+  /* narrow screens: slide right while open so the left page stays on screen */
+  @media (max-width: 600px) and (prefers-reduced-motion: no-preference) {
+    .book3d-wrap.is-open { transform: translateX(calc(var(--w) - 14px)); transition-delay: 0s; }
   }
   .book3d-back {
     inset: 0; background: #e9e4da;
@@ -658,19 +664,19 @@
   @media (prefers-reduced-motion: reduce) { .book3d { transition: none; } }
 
   @media (max-width: 900px) {
-    .page { grid-template-columns: 1fr; gap: 0; }
+    .page { grid-template-columns: minmax(0, 1fr); gap: 0; }
     .rail { padding-top: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--rule); }
     .rail-sticky { position: static; }
     .portrait { width: 140px; height: 140px; }
     main { padding-top: 48px; }
     .bay-head { grid-template-columns: 1fr; gap: 8px; margin-bottom: 32px; }
-    .project-body { grid-template-columns: 1fr; gap: 24px; }
+    .project-body { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .project-title { font-size: 34px; }
-    .project-head { grid-template-columns: 1fr; }
+    .project-head { grid-template-columns: minmax(0, 1fr); }
     .facts { grid-template-columns: repeat(2, 1fr); }
-    .work-item { grid-template-columns: 1fr; gap: 6px; }
-    .c4-card { grid-template-columns: 1fr; }
-    .contact-sheet { grid-template-columns: 1fr; }
+    .work-item { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .c4-card { grid-template-columns: minmax(0, 1fr); }
+    .contact-sheet { grid-template-columns: minmax(0, 1fr); }
     .contact-sheet figure:first-child { grid-row: auto; }
   }
 </style>
@@ -773,8 +779,8 @@
           </div>
         </div>
 
-        <div class="work-item" style="grid-template-columns: 88px 1fr auto; align-items: start;">
-          <div class="work-date" style="padding-top: 4px;">Sep 2025</div>
+        <div class="work-item">
+          <div class="work-date">Sep 2025</div>
           <div class="work-body">
             <h4 class="work-title">Beyond the Hype: Practical AI Applications for SRE</h4>
             <div class="work-venue">Talk <span class="sep">·</span> Big Data London</div>
@@ -1025,23 +1031,42 @@
 </div>
 
 <script>
-  // 3D book: gently turn to face the cursor
+  // 3D book: turns to face the cursor and opens up
   (function () {
     const book = document.getElementById('book3d');
     if (!book) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia('(hover: hover)').matches) return;
-    let raf = 0, mx = 0, my = 0;
+    const wrap = book.closest('.book3d-wrap');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const clamp = (v) => Math.max(-1, Math.min(1, v));
-    function update() {
-      raf = 0;
-      const r = book.getBoundingClientRect();
-      const nx = clamp((mx - (r.left + r.width / 2)) / (innerWidth / 2));
-      const ny = clamp((my - (r.top + r.height / 2)) / (innerHeight / 2));
+    const setTilt = (nx, ny) => {
       book.style.setProperty('--ry', (14 + nx * 18).toFixed(2) + 'deg');
       book.style.setProperty('--rx', (-ny * 12).toFixed(2) + 'deg');
+    };
+
+    if (matchMedia('(hover: hover)').matches) {
+      // mouse: face the cursor, open while hovered
+      let raf = 0, mx = 0, my = 0;
+      const update = () => {
+        raf = 0;
+        const r = book.getBoundingClientRect();
+        setTilt(clamp((mx - (r.left + r.width / 2)) / (innerWidth / 2)),
+                clamp((my - (r.top + r.height / 2)) / (innerHeight / 2)));
+      };
+      addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+      document.documentElement.addEventListener('mouseleave', () => { book.style.removeProperty('--ry'); book.style.removeProperty('--rx'); });
+      wrap.addEventListener('mouseenter', () => wrap.classList.add('is-open'));
+      wrap.addEventListener('mouseleave', () => wrap.classList.remove('is-open'));
+      return;
     }
-    addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
-    document.documentElement.addEventListener('mouseleave', () => { book.style.removeProperty('--ry'); book.style.removeProperty('--rx'); });
+
+    // touch: first tap opens the book, second tap follows the link
+    wrap.addEventListener('click', (e) => {
+      if (wrap.classList.contains('is-open')) return;
+      e.preventDefault();
+      wrap.classList.add('is-open');
+    });
+    // close again once it's scrolled away, so the next visit starts closed
+    new IntersectionObserver(([e]) => { if (!e.isIntersecting) wrap.classList.remove('is-open'); }).observe(book);
   })();
 
   // email reveal — never in the DOM as plaintext, assembled on first interaction
