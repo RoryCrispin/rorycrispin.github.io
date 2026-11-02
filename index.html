@@ -1059,29 +1059,26 @@
       return;
     }
 
-    // touch: open when scrolled into view, tilt with the phone
-    new IntersectionObserver(([e]) => wrap.classList.toggle('is-open', e.intersectionRatio > 0.8),
-      { threshold: [0, 0.8] }).observe(book);
+    // touch: first tap opens the book, second tap follows the link; tilt with the phone
+    wrap.addEventListener('click', (e) => {
+      if (wrap.classList.contains('is-open')) return;
+      e.preventDefault();
+      wrap.classList.add('is-open');
+      // iOS only sends tilt after the user grants motion access from a tap
+      const DOE = window.DeviceOrientationEvent;
+      if (!gotTilt && DOE && typeof DOE.requestPermission === 'function') DOE.requestPermission().catch(() => {});
+    });
+    // close again once it's scrolled away, so the next visit starts closed
+    new IntersectionObserver(([e]) => { if (!e.isIntersecting) wrap.classList.remove('is-open'); }).observe(book);
 
-    let raf = 0, g = 0, b = 0, base = null;
+    let raf = 0, g = 0, b = 0, base = null, gotTilt = false;
     const onTilt = (e) => {
       if (e.gamma == null) return;
       if (base === null) base = e.beta;           // treat the starting angle as neutral
       g = e.gamma; b = e.beta;
       if (!raf) raf = requestAnimationFrame(() => { raf = 0; setTilt(clamp(g / 25), clamp((base - b) / 25)); });
     };
-    let gotTilt = false;
     addEventListener('deviceorientation', (e) => { if (e.gamma != null) gotTilt = true; onTilt(e); });
-    // iOS only sends tilt after a tap grants motion access: ask on the first tap of the book
-    const DOE = window.DeviceOrientationEvent;
-    if (DOE && typeof DOE.requestPermission === 'function') {
-      let asked = false;
-      wrap.addEventListener('click', (e) => {
-        if (asked || gotTilt) return;
-        asked = true; e.preventDefault();
-        DOE.requestPermission().catch(() => {});
-      });
-    }
   })();
 
   // email reveal — never in the DOM as plaintext, assembled on first interaction
