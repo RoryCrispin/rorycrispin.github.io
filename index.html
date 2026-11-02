@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rory Crispin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="color-scheme" content="light dark">
+<script>
+  // follow the visitor's light/dark system preference
+  (function () {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    function apply() { document.documentElement.dataset.theme = mq.matches ? 'dark' : 'paper'; }
+    apply();
+    mq.addEventListener('change', apply);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-
-<script>
-// --- TWEAKS (persisted by host) ---
-const TWEAKS = /*EDITMODE-BEGIN*/{
-  "theme": "paper",
-  "accent": "moss",
-  "density": "compact",
-  "showGrid": false
-}/*EDITMODE-END*/;
-</script>
 
 <style>
   :root {
@@ -76,21 +76,6 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     font-feature-settings: "ss01", "ss02";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-
-  /* optional 12-col grid overlay */
-  body[data-grid="true"]::before {
-    content: "";
-    position: fixed; inset: 0;
-    background-image: repeating-linear-gradient(to right,
-      transparent 0, transparent calc((100% - 11 * 24px) / 12),
-      rgba(168,66,28,.08) calc((100% - 11 * 24px) / 12),
-      rgba(168,66,28,.08) calc((100% - 11 * 24px) / 12 + 24px));
-    pointer-events: none;
-    z-index: 1000;
-    max-width: var(--maxw);
-    margin: 0 auto;
-    left: 0; right: 0;
   }
 
   a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule-soft); transition: border-color .15s, color .15s; }
@@ -178,39 +163,6 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   }
   .contact-row a { color: var(--ink); }
 
-  .rail-nav {
-    font-size: 12px;
-    border-top: 1px solid var(--rule);
-    padding-top: 16px;
-  }
-  .rail-nav-label {
-    color: var(--ink-3);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 10px;
-    margin-bottom: 10px;
-  }
-  .rail-nav ol {
-    list-style: none; padding: 0; margin: 0;
-    counter-reset: railn;
-  }
-  .rail-nav li {
-    counter-increment: railn;
-    padding: 3px 0;
-    display: flex; gap: 10px;
-    color: var(--ink-2);
-  }
-  .rail-nav li::before {
-    content: counter(railn, decimal-leading-zero);
-    color: var(--ink-3);
-    font-size: 10px;
-    padding-top: 4px;
-  }
-  .rail-nav a { border: none; flex: 1; }
-  .rail-nav a:hover { color: var(--accent); }
-  .rail-nav li.active a { color: var(--accent); }
-  .rail-nav li.active::before { color: var(--accent); }
-
   /* ======== main ========= */
   main {
     padding-top: 80px;
@@ -227,19 +179,8 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   }
   section.bay:last-of-type { border-bottom: none; }
   .bay-head {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 24px;
-    align-items: baseline;
     margin-bottom: 48px;
   }
-  .bay-num {
-    font-size: 11px;
-    color: var(--ink-3);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-  .bay-num .slash { color: var(--accent); }
   .bay-title {
     font-family: var(--serif);
     font-weight: 400;
@@ -614,65 +555,108 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   }
 
 
-  /* ---- tweaks panel ---- */
-  .tweaks {
-    position: fixed;
-    bottom: 20px; right: 20px;
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    padding: 16px;
-    font-size: 12px;
-    z-index: 100;
-    width: 260px;
-    display: none;
-    box-shadow: 4px 4px 0 var(--rule);
-  }
-  .tweaks.on { display: block; }
-  .tweaks h4 {
-    margin: 0 0 14px 0;
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--ink-3);
-    display: flex; justify-content: space-between;
-  }
-  .tweaks h4 span { color: var(--accent); }
-  .tweak-row { margin-bottom: 12px; }
-  .tweak-row > label {
-    display: block;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ink-3);
-    margin-bottom: 6px;
-  }
-  .seg {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    border: 1px solid var(--rule);
-    font-size: 11px;
-  }
-  .seg button {
-    background: transparent;
-    border: none;
-    padding: 7px 4px;
-    color: var(--ink-2);
-    cursor: pointer;
-    font-family: var(--mono);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 10px;
-    border-right: 1px solid var(--rule);
-  }
-  .seg button:last-child { border-right: none; }
-  .seg button.on {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
 
-  /* ---- responsive ---- */
+  /* ---- 3D book ---- */
+  .book3d-wrap {
+    --w: 148px; --h: 194px; --d: 26px;
+    flex: none; display: block; border: none;
+    width: var(--w); height: var(--h);
+    margin: 4px 14px 8px;
+    perspective: 900px;
+    filter: drop-shadow(0 14px 16px rgba(0,0,0,.28));
+  }
+  .book3d {
+    --rx: -4deg; --ry: 22deg;
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transition: transform .5s cubic-bezier(.2,.7,.2,1);
+  }
+  .book3d > * { position: absolute; display: block; backface-visibility: hidden; }
+  .book3d-cover {
+    inset: 0; transform-style: preserve-3d; backface-visibility: visible;
+    transform-origin: left center;
+    transform: translateZ(calc(var(--d) / 2));
+    transition: transform .7s cubic-bezier(.3,.6,.2,1) .42s;
+  }
+  .book3d-cover > * { position: absolute; inset: 0; width: 100%; height: 100%; backface-visibility: hidden; }
+  .book3d-front { border-radius: 1px 3px 3px 1px; }
+  .book3d-cover-inside {
+    transform: rotateY(180deg);
+    background: linear-gradient(to left, #ddd7ca, #f1ede4 12%);
+    border-radius: 3px 1px 1px 3px;
+  }
+  .book3d-inner, .book3d-leaf {
+    top: 2px; left: 0; width: calc(100% - 3px); height: calc(100% - 4px);
+  }
+  .book3d-inner {
+    transform: translateZ(calc(var(--d) / 2 - 2px));
+    background: linear-gradient(to right, #e4ded2, #f8f5ee 10%);
+    padding: 26px 16px 14px 18px;
+    font-family: var(--serif); color: #2a2620;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .book3d-leaf {
+    transform-style: preserve-3d; backface-visibility: visible;
+    transform-origin: left center;
+    transform: translateZ(calc(var(--d) / 2 - 1px));
+    transition: transform .6s cubic-bezier(.4,.1,.2,1) calc((3 - var(--i)) * .09s);
+  }
+  .book3d-leaf > span { position: absolute; inset: 0; backface-visibility: hidden; }
+  .leaf-front { background: linear-gradient(to right, #e6e0d4, #faf7f0 10%); }
+  .leaf-back { transform: rotateY(180deg); background: linear-gradient(to left, #e6e0d4, #faf7f0 10%); }
+  .book3d .bk-page {
+    padding: 0;
+    background-color: #fdfcf8; background-size: 100% 100%; background-repeat: no-repeat;
+    box-shadow: inset 6px 0 8px -6px rgba(0,0,0,.18);
+  }
+  .leaf-back.bk-page { box-shadow: inset -6px 0 8px -6px rgba(0,0,0,.18); }
+  .leaf-front:not(.bk-page)::before, .leaf-back:not(.bk-page)::before {
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.";
+    position: absolute; inset: 14px 14px 18px;
+    font-family: var(--serif); font-size: 4.6px; line-height: 1.55; color: #3a362f;
+    text-align: justify; overflow: hidden;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .book3d-wrap { position: relative; z-index: 2; }
+    .book3d-wrap:hover::before { content: ""; position: absolute; top: -10px; bottom: -10px; left: calc(-1 * var(--w) - 16px); right: -10px; }
+    .book3d-wrap:hover .book3d { transform: rotateX(calc(var(--rx) / 2)) rotateY(calc(var(--ry) / 3)); }
+    .book3d-wrap:hover .book3d-cover {
+      transform: translateZ(calc(var(--d) / 2)) rotateY(-168deg);
+      transition-delay: 0s;
+    }
+    .book3d-wrap:hover .book3d-leaf {
+      transform: translateZ(calc(var(--d) / 2 - 1px)) rotateY(calc(-164deg + var(--i) * 4deg));
+      transition-delay: calc(.35s + var(--i) * .14s);
+    }
+  }
+  .book3d-back {
+    inset: 0; background: #e9e4da;
+    transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+    border-radius: 3px 1px 1px 3px;
+  }
+  .book3d-spine {
+    top: 0; left: calc(50% - var(--d) / 2);
+    width: var(--d); height: 100%;
+    background: linear-gradient(to right, #d9d3c6, #f4f1ea 45%, #e2ddd2);
+    box-shadow: inset 0 18px 0 -12px #b8202a;
+    transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+  }
+  .book3d-pages {
+    top: 3px; left: calc(50% - var(--d) / 2);
+    width: calc(var(--d) - 2px); height: calc(100% - 6px);
+    background: repeating-linear-gradient(to right, #f7f4ec 0 1px, #e3ddd0 1px 2px);
+    transform: rotateY(90deg) translateZ(calc(var(--w) / 2 - 2px));
+  }
+  .book3d-top, .book3d-bottom {
+    left: 0; top: calc(50% - var(--d) / 2);
+    width: calc(100% - 3px); height: calc(var(--d) - 2px);
+    background: repeating-linear-gradient(to bottom, #f7f4ec 0 1px, #e3ddd0 1px 2px);
+  }
+  .book3d-top { transform: rotateX(90deg) translateZ(calc(var(--h) / 2 - 2px)); }
+  .book3d-bottom { transform: rotateX(-90deg) translateZ(calc(var(--h) / 2 - 2px)); }
+  @media (prefers-reduced-motion: reduce) { .book3d { transition: none; } }
+
   @media (max-width: 900px) {
     .page { grid-template-columns: 1fr; gap: 0; }
     .rail { padding-top: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--rule); }
@@ -691,7 +675,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
   }
 </style>
 </head>
-<body>
+<body data-accent="moss" data-density="compact">
 
 
 <div class="page">
@@ -727,17 +711,6 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
         </div>
       </div>
 
-      <nav class="rail-nav" id="railNav">
-        <div class="rail-nav-label">Index</div>
-        <ol>
-          <li><a href="#now">Now</a></li>
-          <li><a href="#work">Recent work</a></li>
-          <li><a href="#kubefs">kubefs</a></li>
-          <li><a href="#poker">P2P Poker</a></li>
-          <li><a href="#connect4">Connect4RESTful</a></li>
-          <li><a href="#torocam">toroCam</a></li>
-        </ol>
-      </nav>
     </div>
   </aside>
 
@@ -746,27 +719,49 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 
 
 <!-- ===== RECENT WORK ===== -->
-    <section class="bay" id="work" data-screen-label="01 Recent work">
+    <section class="bay" id="work">
       <div class="bay-head">
-        <div class="bay-num">§ 01 <span class="slash">/</span> 05</div>
         <div>
           <h2 class="bay-title">Recent work <span class="ampersand">&amp;</span> writing</h2>
           <p class="bay-caption">Talks, longform posts and smaller essays from the last few years. Newest first.</p>
         </div>
       </div>
 
-      <!-- Talks -->
       <div class="work-group">
-        <h3>Talks <span class="count">04</span></h3>
+        <div class="work-item">
+          <div class="work-date">Jun 2026</div>
+          <div class="work-body">
+            <h4 class="work-title"><a href="https://www.oreilly.com/library/view/observability-engineering-2nd/9781098179915/ch14.html">Chapter 14, Observability Engineering (2nd Edition)</a></h4>
+            <div class="work-venue">Book <span class="sep">·</span> O'Reilly Media</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-start; margin-top: 14px;">
+              <a class="book3d-wrap" href="https://www.oreilly.com/library/view/observability-engineering-2nd/9781098179915/ch14.html" aria-label="Observability Engineering, 2nd Edition on O'Reilly">
+                <div class="book3d" id="book3d">
+                  <span class="book3d-back"></span>
+                  <span class="book3d-spine"></span>
+                  <span class="book3d-pages"></span>
+                  <span class="book3d-top"></span>
+                  <span class="book3d-bottom"></span>
+                  <span class="book3d-inner bk-page" style="background-image:url(oe2e-ch14-p2.webp)"></span>
+                  <span class="book3d-leaf" style="--i:0"><span class="leaf-front"></span><span class="leaf-back"></span></span>
+                  <span class="book3d-leaf" style="--i:1"><span class="leaf-front"></span><span class="leaf-back"></span></span>
+                  <span class="book3d-leaf" style="--i:2"><span class="leaf-front"></span><span class="leaf-back"></span></span>
+                  <span class="book3d-leaf" style="--i:3"><span class="leaf-front"></span><span class="leaf-back bk-page" style="background-image:url(oe2e-ch14-p1.webp)"></span></span>
+                  <span class="book3d-cover">
+                    <img class="book3d-front" src="observability-engineering-2e.webp" alt="Observability Engineering, 2nd Edition — O'Reilly cover" width="148" height="194">
+                    <span class="book3d-cover-inside"></span>
+                  </span>
+                </div>
+              </a>
+              <p style="margin: 0; flex: 1 1 240px; max-width: 46ch; color: var(--ink-2); font-size: 13px; line-height: 1.6;">My team and I contributed the chapter on observability with ClickHouse to the second edition of <em>Observability Engineering</em>. It draws on lessons from building LogHouse, ClickHouse's own petabyte-scale logging platform, and on why wide events in a fast columnar database change what's practical to store and query.</p>
+            </div>
+          </div>
+        </div>
 
         <div class="work-item">
           <div class="work-date">28 May 2026</div>
           <div class="work-body">
             <h4 class="work-title"><a href="https://clickhouse.com/openhouse/san-francisco">ClickHouse as an AI Safety Layer</a></h4>
-            <div class="work-venue">ClickHouse OpenHouse <span class="sep">·</span> San Francisco</div>
-          </div>
-          <div class="work-links">
-            <a class="chip" href="https://clickhouse.com/openhouse/san-francisco">Details</a>
+            <div class="work-venue">Talk <span class="sep">·</span> ClickHouse OpenHouse <span class="sep">·</span> San Francisco</div>
           </div>
         </div>
 
@@ -774,10 +769,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <div class="work-date">Mar 2026</div>
           <div class="work-body">
             <h4 class="work-title"><a href="https://www.meetup.com/clickhouse-london-user-group/events/313701660/">AI Dashboards &amp; Time-Travel Debugging Kubernetes</a></h4>
-            <div class="work-venue">ClickHouse Observability Meetup at SRE Days London <span class="sep">·</span> Everyman Canary Wharf</div>
-          </div>
-          <div class="work-links">
-            <a class="chip" href="https://www.meetup.com/clickhouse-london-user-group/events/313701660/">Details</a>
+            <div class="work-venue">Talk <span class="sep">·</span> ClickHouse Observability Meetup at SRE Days London <span class="sep">·</span> Everyman Canary Wharf</div>
           </div>
         </div>
 
@@ -785,7 +777,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <div class="work-date" style="padding-top: 4px;">Sep 2025</div>
           <div class="work-body">
             <h4 class="work-title">Beyond the Hype: Practical AI Applications for SRE</h4>
-            <div class="work-venue">Big Data London</div>
+            <div class="work-venue">Talk <span class="sep">·</span> Big Data London</div>
             <a href="https://www.youtube.com/watch?v=og8ieNxixp4" style="display:block; margin-top: 14px; border: 1px solid var(--rule); overflow: hidden;">
               <img src="big-data-ldn-2025.png" alt="Big Data LDN 2025 — AI for Internal Observability @ ClickHouse" style="width: 100%; display: block; filter: contrast(1.02);">
             </a>
@@ -799,11 +791,18 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <div class="work-date">Sep 2025</div>
           <div class="work-body">
             <h4 class="work-title">LogHouse — the story behind ClickHouse's own logging platform</h4>
-            <div class="work-venue">SRE Day London</div>
+            <div class="work-venue">Talk <span class="sep">·</span> SRE Day London</div>
           </div>
           <div class="work-links">
-            <a class="chip" href="https://www.youtube.com/watch?v=8gJF7MnjFAo">Recording</a>
             <a class="chip" href="https://sreday.com/2025-london-q3/Rory_Crispin_ClickHouse_Beyond_100_Petabytes_Why_We_Built_a_Custom_Exporter_to_Replace_Our_OTel_Pipe">Schedule</a>
+          </div>
+        </div>
+
+        <div class="work-item">
+          <div class="work-date">Jun 2025</div>
+          <div class="work-body">
+            <h4 class="work-title"><a href="https://clickhouse.com/blog/scaling-observability-beyond-100pb-wide-events-replacing-otel">Scaling our Observability platform beyond 100 Petabytes by embracing wide events and replacing OTel</a></h4>
+            <div class="work-venue">Writing <span class="sep">·</span> clickhouse.com/blog</div>
           </div>
         </div>
 
@@ -811,20 +810,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <div class="work-date">May 2025</div>
           <div class="work-body">
             <h4 class="work-title">Building LogHouse</h4>
-            <div class="work-venue">London ClickHouse Meetup</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Writing -->
-      <div class="work-group">
-        <h3>Writing <span class="count">04</span></h3>
-
-        <div class="work-item">
-          <div class="work-date">Jun 2025</div>
-          <div class="work-body">
-            <h4 class="work-title"><a href="https://clickhouse.com/blog/scaling-observability-beyond-100pb-wide-events-replacing-otel">Scaling our Observability platform beyond 100 Petabytes by embracing wide events and replacing OTel</a></h4>
-            <div class="work-venue">clickhouse.com/blog</div>
+            <div class="work-venue">Talk <span class="sep">·</span> London ClickHouse Meetup</div>
           </div>
         </div>
 
@@ -832,17 +818,15 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <div class="work-date">Apr 2024</div>
           <div class="work-body">
             <h4 class="work-title"><a href="https://clickhouse.com/blog/building-a-logging-platform-with-clickhouse-and-saving-millions-over-datadog">How we Built a 19 PiB Logging Platform with ClickHouse and Saved Millions</a></h4>
-            <div class="work-venue">clickhouse.com/blog</div>
+            <div class="work-venue">Writing <span class="sep">·</span> clickhouse.com/blog</div>
           </div>
         </div>
-
-        <h3 style="margin-top: 32px;">Personal <span class="count">02</span></h3>
 
         <div class="work-item">
           <div class="work-date">Oct 2022</div>
           <div class="work-body">
             <h4 class="work-title"><a href="https://rorycrispin.co.uk/mitm-proxy.html">Man in the Middle traffic to the Kubernetes API</a></h4>
-            <div class="work-venue">rorycrispin.co.uk</div>
+            <div class="work-venue">Writing <span class="sep">·</span> rorycrispin.co.uk</div>
           </div>
         </div>
 
@@ -850,14 +834,14 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
           <div class="work-date">Sep 2022</div>
           <div class="work-body">
             <h4 class="work-title"><a href="https://rorycrispin.co.uk/gcp-lb-options.html">Load Balancing options on GCP</a></h4>
-            <div class="work-venue">rorycrispin.co.uk</div>
+            <div class="work-venue">Writing <span class="sep">·</span> rorycrispin.co.uk</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ===== KUBEFS ===== -->
-    <section class="bay" id="kubefs" data-screen-label="02 kubefs">
+    <section class="bay" id="kubefs">
       <article class="project">
         <header class="project-head">
           <div>
@@ -906,7 +890,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     </section>
 
     <!-- ===== POKER ===== -->
-    <section class="bay" id="poker" data-screen-label="03 Poker">
+    <section class="bay" id="poker">
       <article class="project">
         <header class="project-head">
           <div>
@@ -932,7 +916,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     </section>
 
     <!-- ===== CONNECT4 ===== -->
-    <section class="bay" id="connect4" data-screen-label="04 Connect4">
+    <section class="bay" id="connect4">
       <article class="project">
         <header class="project-head">
           <div>
@@ -984,7 +968,7 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
     </section>
 
     <!-- ===== TOROCAM ===== -->
-    <section class="bay" id="torocam" data-screen-label="05 toroCam">
+    <section class="bay" id="torocam">
       <article class="project">
         <header class="project-head">
           <div>
@@ -1008,17 +992,17 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 
         <figure class="full-figure">
           <img src="https://rorycrispin.co.uk/dropPhoto.jpg" alt="A droplet captured mid-rebound">
-          <figcaption>Fig. 01 — test shot, 2013</figcaption>
+          <figcaption>Test shot, 2013</figcaption>
         </figure>
 
         <div class="contact-sheet">
           <figure>
             <img src="https://rorycrispin.co.uk/tcBoard1.jpg" alt="toroCam custom PCB, front">
-            <figcaption><span>Board · Rev A</span><span>01 / 02</span></figcaption>
+            <figcaption><span>Board · Rev A</span></figcaption>
           </figure>
           <figure>
             <img src="https://rorycrispin.co.uk/tcBoard2.jpg" alt="toroCam custom PCB, back">
-            <figcaption><span>Board · Rev A</span><span>02 / 02</span></figcaption>
+            <figcaption><span>Board · Rev A</span></figcaption>
           </figure>
           <figure style="display:grid;place-items:center;background:var(--bg-2);padding:20px;">
             <div style="font-family:var(--mono);font-size:10px;line-height:1.6;color:var(--ink-3);text-align:left;">
@@ -1040,105 +1024,25 @@ const TWEAKS = /*EDITMODE-BEGIN*/{
 
 </div>
 
-<!-- ===== Tweaks panel ===== -->
-<div class="tweaks" id="tweaks">
-  <h4>Tweaks <span>● live</span></h4>
-
-  <div class="tweak-row">
-    <label>Theme</label>
-    <div class="seg" data-key="theme">
-      <button data-val="paper">Paper</button>
-      <button data-val="dark">Dark</button>
-    </div>
-  </div>
-
-  <div class="tweak-row">
-    <label>Accent</label>
-    <div class="seg" data-key="accent">
-      <button data-val="moss">Moss</button>
-      <button data-val="ember">Ember</button>
-      <button data-val="iris">Iris</button>
-      <button data-val="ink">Ink</button>
-    </div>
-  </div>
-
-  <div class="tweak-row">
-    <label>Density</label>
-    <div class="seg" data-key="density">
-      <button data-val="compact">Compact</button>
-      <button data-val="comfortable">Comfy</button>
-      <button data-val="roomy">Roomy</button>
-    </div>
-  </div>
-
-  <div class="tweak-row">
-    <label>Grid overlay</label>
-    <div class="seg" data-key="showGrid">
-      <button data-val="false">Off</button>
-      <button data-val="true">On</button>
-    </div>
-  </div>
-</div>
-
 <script>
-  // ===== apply tweaks =====
-  function applyTweaks(t) {
-    document.body.dataset.theme = t.theme;
-    document.body.dataset.accent = t.accent;
-    document.body.dataset.density = t.density;
-    document.body.dataset.grid = String(t.showGrid);
-
-    document.querySelectorAll('.seg').forEach(seg => {
-      const key = seg.dataset.key;
-      let val = t[key];
-      if (typeof val === 'boolean') val = String(val);
-      seg.querySelectorAll('button').forEach(b => {
-        b.classList.toggle('on', b.dataset.val === val);
-      });
-    });
-  }
-  applyTweaks(TWEAKS);
-
-  // ===== edit mode protocol =====
-  window.addEventListener('message', (e) => {
-    const d = e.data || {};
-    if (d.type === '__activate_edit_mode') {
-      document.getElementById('tweaks').classList.add('on');
-    } else if (d.type === '__deactivate_edit_mode') {
-      document.getElementById('tweaks').classList.remove('on');
+  // 3D book: gently turn to face the cursor
+  (function () {
+    const book = document.getElementById('book3d');
+    if (!book) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia('(hover: hover)').matches) return;
+    let raf = 0, mx = 0, my = 0;
+    const clamp = (v) => Math.max(-1, Math.min(1, v));
+    function update() {
+      raf = 0;
+      const r = book.getBoundingClientRect();
+      const nx = clamp((mx - (r.left + r.width / 2)) / (innerWidth / 2));
+      const ny = clamp((my - (r.top + r.height / 2)) / (innerHeight / 2));
+      book.style.setProperty('--ry', (14 + nx * 18).toFixed(2) + 'deg');
+      book.style.setProperty('--rx', (-ny * 12).toFixed(2) + 'deg');
     }
-  });
-  window.parent.postMessage({type: '__edit_mode_available'}, '*');
-
-  // ===== seg click =====
-  document.querySelectorAll('.seg').forEach(seg => {
-    seg.addEventListener('click', (e) => {
-      const btn = e.target.closest('button'); if (!btn) return;
-      const key = seg.dataset.key;
-      let val = btn.dataset.val;
-      if (val === 'true') val = true;
-      else if (val === 'false') val = false;
-      TWEAKS[key] = val;
-      applyTweaks(TWEAKS);
-      window.parent.postMessage({type: '__edit_mode_set_keys', edits: {[key]: val}}, '*');
-    });
-  });
-
-  // ===== active section highlight in rail =====
-  const railLinks = document.querySelectorAll('#railNav a');
-  const sections = [...railLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-  function updateActive() {
-    const y = window.scrollY + 120;
-    let active = 0;
-    sections.forEach((s, i) => {
-      if (s.offsetTop <= y) active = i;
-    });
-    document.querySelectorAll('#railNav li').forEach((li, i) => {
-      li.classList.toggle('active', i === active);
-    });
-  }
-  window.addEventListener('scroll', updateActive, {passive:true});
-  updateActive();
+    addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => { book.style.removeProperty('--ry'); book.style.removeProperty('--rx'); });
+  })();
 
   // email reveal — never in the DOM as plaintext, assembled on first interaction
   document.querySelectorAll('a.em').forEach(a => {
