@@ -573,10 +573,62 @@
     transition: transform .5s cubic-bezier(.2,.7,.2,1);
   }
   .book3d > * { position: absolute; display: block; backface-visibility: hidden; }
-  .book3d-front {
-    inset: 0; width: 100%; height: 100%;
+  .book3d-cover {
+    inset: 0; transform-style: preserve-3d; backface-visibility: visible;
+    transform-origin: left center;
     transform: translateZ(calc(var(--d) / 2));
-    border-radius: 1px 3px 3px 1px;
+    transition: transform .7s cubic-bezier(.3,.6,.2,1) .42s;
+  }
+  .book3d-cover > * { position: absolute; inset: 0; width: 100%; height: 100%; backface-visibility: hidden; }
+  .book3d-front { border-radius: 1px 3px 3px 1px; }
+  .book3d-cover-inside {
+    transform: rotateY(180deg);
+    background: linear-gradient(to left, #ddd7ca, #f1ede4 12%);
+    border-radius: 3px 1px 1px 3px;
+  }
+  .book3d-inner, .book3d-leaf {
+    top: 2px; left: 0; width: calc(100% - 3px); height: calc(100% - 4px);
+  }
+  .book3d-inner {
+    transform: translateZ(calc(var(--d) / 2 - 2px));
+    background: linear-gradient(to right, #e4ded2, #f8f5ee 10%);
+    padding: 26px 16px 14px 18px;
+    font-family: var(--serif); color: #2a2620;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .book3d-leaf {
+    transform-style: preserve-3d; backface-visibility: visible;
+    transform-origin: left center;
+    transform: translateZ(calc(var(--d) / 2 - 1px));
+    transition: transform .6s cubic-bezier(.4,.1,.2,1) calc((3 - var(--i)) * .09s);
+  }
+  .book3d-leaf > span { position: absolute; inset: 0; backface-visibility: hidden; }
+  .leaf-front { background: linear-gradient(to right, #e6e0d4, #faf7f0 10%); }
+  .leaf-back { transform: rotateY(180deg); background: linear-gradient(to left, #e6e0d4, #faf7f0 10%); }
+  .book3d .bk-page {
+    padding: 0;
+    background-color: #fdfcf8; background-size: 100% 100%; background-repeat: no-repeat;
+    box-shadow: inset 6px 0 8px -6px rgba(0,0,0,.18);
+  }
+  .leaf-back.bk-page { box-shadow: inset -6px 0 8px -6px rgba(0,0,0,.18); }
+  .leaf-front:not(.bk-page)::before, .leaf-back:not(.bk-page)::before {
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.";
+    position: absolute; inset: 14px 14px 18px;
+    font-family: var(--serif); font-size: 4.6px; line-height: 1.55; color: #3a362f;
+    text-align: justify; overflow: hidden;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .book3d-wrap { position: relative; z-index: 2; }
+    .book3d-wrap:hover::before { content: ""; position: absolute; top: -10px; bottom: -10px; left: calc(-1 * var(--w) - 16px); right: -10px; }
+    .book3d-wrap:hover .book3d { transform: rotateX(calc(var(--rx) / 2)) rotateY(calc(var(--ry) / 3)); }
+    .book3d-wrap:hover .book3d-cover {
+      transform: translateZ(calc(var(--d) / 2)) rotateY(-168deg);
+      transition-delay: 0s;
+    }
+    .book3d-wrap:hover .book3d-leaf {
+      transform: translateZ(calc(var(--d) / 2 - 1px)) rotateY(calc(-164deg + var(--i) * 4deg));
+      transition-delay: calc(.35s + var(--i) * .14s);
+    }
   }
   .book3d-back {
     inset: 0; background: #e9e4da;
@@ -684,12 +736,20 @@
             <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-start; margin-top: 14px;">
               <a class="book3d-wrap" href="https://www.oreilly.com/library/view/observability-engineering-2nd/9781098179915/ch14.html" aria-label="Observability Engineering, 2nd Edition on O'Reilly">
                 <div class="book3d" id="book3d">
-                  <img class="book3d-front" src="observability-engineering-2e.webp" alt="Observability Engineering, 2nd Edition — O'Reilly cover" width="148" height="194">
                   <span class="book3d-back"></span>
                   <span class="book3d-spine"></span>
                   <span class="book3d-pages"></span>
                   <span class="book3d-top"></span>
                   <span class="book3d-bottom"></span>
+                  <span class="book3d-inner bk-page" style="background-image:url(oe2e-ch14-p2.webp)"></span>
+                  <span class="book3d-leaf" style="--i:0"><span class="leaf-front"></span><span class="leaf-back"></span></span>
+                  <span class="book3d-leaf" style="--i:1"><span class="leaf-front"></span><span class="leaf-back"></span></span>
+                  <span class="book3d-leaf" style="--i:2"><span class="leaf-front"></span><span class="leaf-back"></span></span>
+                  <span class="book3d-leaf" style="--i:3"><span class="leaf-front"></span><span class="leaf-back bk-page" style="background-image:url(oe2e-ch14-p1.webp)"></span></span>
+                  <span class="book3d-cover">
+                    <img class="book3d-front" src="observability-engineering-2e.webp" alt="Observability Engineering, 2nd Edition — O'Reilly cover" width="148" height="194">
+                    <span class="book3d-cover-inside"></span>
+                  </span>
                 </div>
               </a>
               <p style="margin: 0; flex: 1 1 240px; max-width: 46ch; color: var(--ink-2); font-size: 13px; line-height: 1.6;">My team and I contributed the chapter on observability with ClickHouse to the second edition of <em>Observability Engineering</em>. It draws on lessons from building LogHouse, ClickHouse's own petabyte-scale logging platform, and on why wide events in a fast columnar database change what's practical to store and query.</p>
